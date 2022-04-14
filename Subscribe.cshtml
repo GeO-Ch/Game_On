@@ -1,0 +1,24 @@
+﻿@model GameON.Core.Models.CreditCard
+@{
+    ViewBag.Title = "Subscribe";
+}
+
+<h2>Subscribe</h2>
+
+
+
+@if (Model.User.IsSubscribed)
+{
+    <p class="alert alert-info">You already have a Subscription</p>
+}
+else
+{
+    <ul>
+        <li>mpla mpla</li>
+        <li>mpla mpla</li>
+        <li>mpla mpla</li>
+        <li>mpla mpla</li>
+    </ul>
+    <p>Subscription fee: 50 EUR</p>
+    <p>@Html.ActionLink("Subscribe", "SubscribeUser", "CreditCard")</p>
+}

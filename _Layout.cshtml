@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameON-@ViewBag.Title</title>
+    <link rel="icon" href="../../images/logo1.png">
+    <link href='https://fonts.googleapis.com/css?family=Poppins:400,300,500,600,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+
+                    <span class="icon-bar"></span>
+                </button>
+                
+                <a href='@Url.Action("Index", "Home")'>
+                    <img src="../../images/logo1.png" style="height: 80px; width: 80px; border-radius: 50%; box-shadow: 0 8px 8px 0 rgb(156, 63, 137), 0 6px 19px 0 rgb(12, 193, 185); margin-top: 10px;" />
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Create a Tournament", "Create", "Tournament")</li>
+                    <li>@Html.ActionLink("Subscribe", "Subscribe", "CreditCard")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - GameON</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/lib")
+    @Scripts.Render("~/bundles/app")
+    @*@Scripts.Render("~/bundles/bootstrap")*@
+    @RenderSection("scripts", required: false)
+    <script type="text/x-template" id="notifications-template">
+        <ul class="notifications">
+            <%
+            _.each(notifications, function(notification){
+            if(notification.type==1){ %>
+            <li><span class="highlight"><%= notification.tournament.host.name %></span> has canceled the tournament at <%= notification.tournament.venue%> on <%=  moment(notification.tournament.dateTime).format("D MMM HH:mm")%></li>
+            <% }
+            })
+            %>
+        </ul>
+    </script>
+    <script>
+        $(document).ready(function () {
+            $.getJSON("/api/notifications", function (notifications) {
+                console.log(notifications);
+                if (!notifications.length)
+                    return;
+
+                $(".js-notification-count")
+                    .text(notifications.length)
+                    .removeClass("hide")
+                    .addClass("animated bounceInDown");
+
+                $(".notifications").popover({
+                    html: true,
+                    title: "Notifications",
+                    content: function () {
+
+                        var compiled = _.template($("#notifications-template").html());
+                        var html = compiled({ notifications: notifications });
+                        console.log(html);
+                        return html;
+                    },
+                    placement: "bottom",
+                    template: '<div class="popover popover-notifications" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
+                }).on('shown.bs.popover', function () {
+                    console.log('popover shown event works');
+                    $.post("/API/notifications/markAsRead")
+                        .done(function () {
+                            $('.js-notification-count').text("").addClass("hide");
+                        });
+                });
+            });
+        });
+    </script>
+
+
+</body>
+</html>

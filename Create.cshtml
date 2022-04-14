@@ -1,0 +1,49 @@
+﻿@model GameON.ViewModel.TournamentFormViewModel
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create a Tournament</h2>
+@using (Html.BeginForm("Create", "Tournament"))
+{
+    <p class="alert alert-info">All Fields are <strong>required</strong></p>
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.LabelFor(t => t.Title)
+        @Html.TextBoxFor(t => t.Title, new { @class = "form-control" })
+        @Html.ValidationMessageFor(t => t.Title)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(t => t.Venue)
+        @Html.TextBoxFor(t => t.Venue, new { @class = "form-control" })
+        @Html.ValidationMessageFor(t => t.Venue)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(t => t.Description)
+        @Html.TextBoxFor(t => t.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(t => t.Description)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(t => t.Date)
+        @Html.TextBoxFor(t => t.Date, new { @class = "form-control" })
+        @Html.ValidationMessageFor(t => t.Date)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(t => t.Time)
+        @Html.TextBoxFor(t => t.Time, new { @class = "form-control" })
+        @Html.ValidationMessageFor(t => t.Time)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(t => t.GameId)
+        @Html.DropDownListFor(t => t.GameId, new SelectList(Model.Games, "Id", "Title"), "--select--", new { @class = "form-control" })
+        @Html.ValidationMessageFor(t => t.GameId)
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+
+}
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}

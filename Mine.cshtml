@@ -1,0 +1,63 @@
+﻿@model IEnumerable<GameON.Core.Models.Tournament>
+@{
+    ViewBag.Title = "Mine";
+}
+
+<h3>Tournaments I am hosting</h3>
+
+<ul class="tournaments">
+    @foreach (var tournament in Model)
+    {
+        <li>
+            <div class="date">
+                <div class="month">
+                    @tournament.DateTime.ToString("MMM")
+                </div>
+                <div class="day">
+                    @tournament.DateTime.ToString("d ")
+                </div>
+            </div>
+            <div class="details">
+                <span class="title">
+                    @tournament.Title
+                </span>
+                <span class="venue">
+                    @@  @tournament.Venue
+                </span>
+                <span class="game">
+                    @tournament.Game.Title
+                </span>
+                <div class="actions">
+                    <a href="@Url.Action("Edit", "Tournament", new { id = tournament.Id})">Edit</a> |
+                    <a href="#" class="js-cancel-tour" data-tour-id="@tournament.Id">Cancel</a>
+                </div>
+            </div>
+        </li>
+    }
+</ul>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(".js-cancel-tour").click(function (e) {
+                let link = $(e.target);
+                if (confirm("Are you sure you want to cancel the Tournament?")) {
+                    $.ajax({
+                        url: "/api/tournaments/" + link.attr("data-tour-id"),
+                        method: "DELETE"
+                    })
+                        .done(function () {
+                            link.parents("li").fadeOut(function () {
+                                $(this).remove();
+                            });
+                        })
+                        .fail(function () {
+                            alert("Sth failed!");
+                        });
+                }
+            });
+        });
+    </script>
+}
+

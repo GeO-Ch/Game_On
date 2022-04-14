@@ -1,0 +1,70 @@
+﻿@model GameON.ViewModels.TournamentViewModel
+
+@{
+    ViewBag.Title = Model.Heading;
+}
+
+    <h3>@Model.Heading</h3>
+
+@using (Html.BeginForm("Search", "Tournament"))
+{
+    <div class="form-group">
+        <div id="searchTours" class="input-group">
+            @Html.TextBoxFor(m => m.SearchTerm, new { @class = "form-control"})
+            <span  class="input-group-addon">
+                <i class="glyphicon glyphicon-search"></i>
+            </span>
+        </div>
+    </div>
+}
+
+<ul id="tournaments"class="tournaments">
+    @foreach (var tournament in Model.UpcomingTournaments)
+    {
+    <li class="tournament">
+        <div class="date">
+            <div class="month">
+                @tournament.DateTime.ToString("MMM")
+            </div>
+            <div class="day">
+                @tournament.DateTime.ToString("d ")
+            </div>
+        </div>
+        <div class="details">
+            <span class="tournament">
+                <a href="@Url.Action("Details","Tournament", new {id = tournament.Id})">
+                    <span class="hovercraft" style="color: white;"> <strong>  @tournament.Title</strong></span>
+                </a>
+
+                @if (tournament.IsCancelled)
+                {
+                    <span class="label label-warning">Cancelled</span>
+                }
+            </span>
+            <div>
+                <span class="game">
+                   Game:  @tournament.Game.Title
+                </span>
+                <span class="host">
+                    Host: @tournament.Host.Name
+                </span>
+            </div>
+
+            @if (Model.ShowActions && !tournament.IsCancelled)
+            {
+                <button data-tournament-id="@tournament.Id" class="btn @(Model.Participations.Contains(tournament.Id) ? "btn-info" : "btn-default") btn-sm js-toggle-participation">Participating?</button>
+            }
+        </div>
+    </li>
+        }
+</ul>
+
+
+@section scripts
+    {
+        <script>
+            $(document).ready(function () {
+                TournamentsController.init("#tournaments");
+            });
+        </script>
+}

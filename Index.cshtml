@@ -1,0 +1,53 @@
+﻿@model GameON.ViewModels.HomeViewModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<ul class="tournaments">
+    @foreach (var tournament in Model.UpcomingTournaments)
+    {
+        <li class="tournament">
+            <div class="date">
+                <div class="month">
+                    @tournament.DateTime.ToString("MMM")
+                </div>
+                <div class="day">
+                    @tournament.DateTime.ToString("d ")
+                </div>
+            </div>
+            <div class="details">
+                <span class="host">
+                    @tournament.Host.Name
+                </span>
+                <span class="game">
+                    @tournament.Game.Title
+                </span>
+                @if (Model.ShowActions)
+                {
+                    <button data-tournament-id="@tournament.Id" class="btn btn-default btn-sm js-toggle-participation">Participating?</button>
+                }
+            </div>
+        </li>
+    }
+</ul>
+@section scripts
+    {
+        <script>
+            $(document).ready(function () {
+                $(".js-toggle-participation").click(function (e) {
+                    let button = $(e.target);
+                    $.post("/api/participations", { tournamentId: button.attr("data-tournament-id") })
+                        .done(function () {
+                            button
+                                .removeClass("btn-default")
+                                .addClass("btn-info")
+                                .text("Participating");
+                        })
+                        .fail(function () {
+                            alert("something failed");
+                        });
+                });
+            });
+        </script>
+}

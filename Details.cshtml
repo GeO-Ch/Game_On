@@ -1,0 +1,17 @@
+﻿@model GameON.ViewModels.TournamentDetailsViewModel
+
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>
+    <strong>@Model.Tournament.Title</strong>
+</h2>
+<p>
+    <div><em>Hosted by @Model.Tournament.Host.Name</em></div><hr /> <strong>@Model.Tournament.DateTime.ToString("d MMM") - @Model.Tournament.DateTime.ToString("HH:mm")</strong> @@ @Model.Tournament.Venue
+</p>
+@if(User.Identity.IsAuthenticated && Model.IsParticipating)
+{
+    <p class="alert alert-info">You are Attending this event!</p>
+}
